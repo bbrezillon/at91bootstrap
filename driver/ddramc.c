@@ -29,6 +29,7 @@
 #include "hardware.h"
 #include "arch/at91_ddrsdrc.h"
 #include "arch/at91_sfr.h"
+#include "backup.h"
 #include "debug.h"
 #include "ddramc.h"
 #include "timer.h"
@@ -712,6 +713,8 @@ int ddr3_sdram_initialize(unsigned int base_address,
 	write_ddramc(base_address, HDDRSDRC2_T1PR, ddramc_config->t1pr);
 	write_ddramc(base_address, HDDRSDRC2_T2PR, ddramc_config->t2pr);
 
+
+	if (!backup_resume()) {
 	/*
 	 * Step 3: A NOP command is issued to the DDR3-SRAM.
 	 * Program the NOP command in the MPDDRC Mode Register (MPDDRC_MR).
@@ -812,7 +815,13 @@ int ddr3_sdram_initialize(unsigned int base_address,
 	 * Step 13: Perform a write access to any DDR3-SDRAM address.
 	 */
 	*((unsigned int *)ram_address) = 0;
-
+	}
+	else
+	{
+	write_ddramc(base_address, HDDRSDRC2_MR, AT91C_DDRC2_MODE_NORMAL_CMD);
+	write_ddramc(base_address,
+		     HDDRSDRC2_LPR, 0x10001);
+	}
 	/*
 	 * Step 14: Write the refresh rate into the COUNT field in the MPDDRC
 	 * Refresh Timer Register (MPDDRC_RTR):
