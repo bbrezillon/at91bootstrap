@@ -886,6 +886,25 @@ void at91_board_config_twi_bus(void)
 }
 #endif
 
+#if defined(CONFIG_BACKUP_MODE)
+int at91_board_pmic_resume(void)
+{
+
+	/* Disable hibernate. */
+	act8865_write(0x1, 0);
+
+	act8865_write(REG1_0, ACT8865_1V35);
+	act8865_write(REG1_1, ACT8865_1V35);
+
+	act8865_write(0x34, 0xb8);
+	act8865_write(0x44, 0xb8);
+	act8865_write(0x52, 0xf8);
+	act8865_write(0x56, 0xf8);
+
+	return 0;
+}
+#endif
+
 #if defined(CONFIG_ACT8865_SET_VOLTAGE)
 int at91_board_act8865_set_reg_voltage(void)
 {

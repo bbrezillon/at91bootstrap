@@ -76,6 +76,7 @@
 #define ACT8865_1V2	0x18
 #define ACT8865_1V25	0x19
 #define ACT8865_1V3	0x1a
+#define ACT8865_1V35	0x1b
 #define ACT8865_1V8	0x24
 #define ACT8865_2V5	0x31
 #define ACT8865_3V3	0x39
@@ -103,6 +104,8 @@
 /*
  * Function Declarations
  */
+extern int act8865_read(unsigned char reg_addr, unsigned char *data);
+extern int act8865_write(unsigned char reg_addr, unsigned char data);
 extern int act8865_set_reg_voltage(unsigned char volt_reg, unsigned char value);
 extern int act8865_check_i2c_disabled(void);
 

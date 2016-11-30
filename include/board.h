@@ -133,5 +133,6 @@ extern void at91_disable_mac_clock(void);
 extern void at91_disable_smd_clock(void);
 
 extern int at91_board_act8865_set_reg_voltage(void);
+extern int at91_board_pmic_resume(void);
 
 #endif /* #ifndef __BOARD_H__ */

@@ -31,6 +31,7 @@
 #include "twi.h"
 #include "act8865.h"
 #include "debug.h"
+#include "backup.h"
 
 /*
  * ACT8865 Device Slave Address
@@ -58,7 +59,7 @@ static unsigned int act8865_get_twi_bus(void)
 	return bus;
 }
 
-static int act8865_read(unsigned char reg_addr, unsigned char *data)
+int act8865_read(unsigned char reg_addr, unsigned char *data)
 {
 	unsigned int bus;
 	int ret;
@@ -72,7 +73,7 @@ static int act8865_read(unsigned char reg_addr, unsigned char *data)
 	return 0;
 }
 
-static int act8865_write(unsigned char reg_addr, unsigned char data)
+int act8865_write(unsigned char reg_addr, unsigned char data)
 {
 	unsigned int bus;
 	int ret;
@@ -276,9 +277,19 @@ void act8865_workaround(void)
 	if (!twi_init_done)
 		twi_init();
 
+#if defined(CONFIG_BACKUP_MODE)
+	if (backup_resume())
+		at91_board_pmic_resume();
+#if defined(CONFIG_ACT8865_SET_VOLTAGE)
+	/* Set ACT8865 REG output voltage */
+	else
+		at91_board_act8865_set_reg_voltage();
+#endif
+#else
 #if defined(CONFIG_ACT8865_SET_VOLTAGE)
 	/* Set ACT8865 REG output voltage */
 	at91_board_act8865_set_reg_voltage();
+#endif
 #endif
 
 #if defined(CONFIG_DISABLE_ACT8865_I2C)
